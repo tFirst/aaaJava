@@ -13,8 +13,12 @@ public class Auth {
 
     public void AuthManager ( String login, String pass ) { /** метод, который принимает логин и пароль из командной строки */
 
-        this.login = login;
-        this.hash = hashMake( hashMake( pass ) + salt );
+        login = login;
+        pass = hashMake( hashMake( pass ) + salt );
+
+        Check( login, pass );
+
+
 
     }
 
@@ -38,11 +42,10 @@ public class Auth {
 
     private void Check ( String login, String hash ) { /** Метод, непосредственно, проверки данных на достоверность */
 
-        if ( this.login != login ) {
+        if ( !this.login.equals(login) )
             System.exit(1);
 
-        }
-        else if ( this.hash != hash )
+        else if ( !this.hash.equals(hash) )
             System.exit(2);
 
     }
