@@ -7,47 +7,43 @@ import java.math.BigInteger;
 /** Класс, описывающий аутентификацию по логину и паролю */
 public class Auth {
 
-    protected String login;
-    protected String hash;
-    protected String salt;
+    private String login;
+    private String hash;
+    private String salt;
 
-    public void AuthManager ( String login, String pass ) { /** метод, который принимает логин и пароль из командной строки */
+    public Auth ( String login, String hash, String salt ) { /** метод, который принимает логин и пароль из командной строки */
 
-        login = login;
-        pass = hashMake( hashMake( pass ) + salt );
+        this.login = login;
+        this.hash = hash;
+        this.salt = salt;
 
-        Check( login, pass );
+        //Check( login, pass );
 
 
-
-    }
-
-    public String hashMake( String pass ) { /** метод для хеширования пароля */
-
-        try {
-
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(pass.getBytes(), 0, pass.length());
-            String hash = new BigInteger(1,md5.digest()).toString(16);
-            return hash;
-
-        }
-
-        catch ( final NoSuchAlgorithmException e ) {
-            e.printStackTrace();
-            return "";
-        }
 
     }
 
-    private void Check ( String login, String hash ) { /** Метод, непосредственно, проверки данных на достоверность */
-
-        if ( !this.login.equals(login) )
-            System.exit(1);
-
-        else if ( !this.hash.equals(hash) )
-            System.exit(2);
-
+    public String getLogin() {
+        return login;
     }
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }
