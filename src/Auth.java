@@ -3,6 +3,7 @@
  */
 import java.security.*;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 /** Класс, описывающий аутентификацию по логину и паролю */
 public class Auth {
@@ -17,9 +18,42 @@ public class Auth {
         this.hash = hash;
         this.salt = salt;
 
-        //Check( login, pass );
+    }
 
+    public static String hashMake(String pass) { /** метод для хеширования пароля */
 
+        try {
+
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(pass.getBytes(), 0, pass.length());
+            String hash = new BigInteger(1, md5.digest()).toString(16);
+            return hash;
+
+        } catch (final NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
+    public static void checkUser(Object login, Object pass, ArrayList<Auth> auth) { /** Метод, непосредственно, проверки данных на достоверность */
+
+        int temp = -1;
+
+        for ( int i = 0; i < auth.size(); i++ ) {
+
+            if (login.equals(auth.get(i).login))
+                temp = i;
+
+        }
+
+        if ( temp == -1 )
+            System.exit(1);
+
+        pass = hashMake(hashMake((String) pass)+auth.get(temp).salt);
+
+        if (!pass.equals(auth.get(temp).hash))
+            System.exit(2);
 
     }
 

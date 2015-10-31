@@ -2,23 +2,23 @@
 
         READ, WRITE, EXEC;
 
-        private static int checkRoles( Roles role ) {
-            switch ( role ) {
-
-                case READ:
-                    return 1;
-
-                case WRITE:
-                    return 2;
-
-                case EXEC:
-                    return 4;
-
-                default:
-                    throw new RuntimeException("!!!");
-
-            }
-        }
+//        public static Roles checkRoles( String role ) {
+//            switch ( role ) {
+//
+//                case "READ":
+//                    return READ;
+//
+//                case "WRITE":
+//                    return WRITE;
+//
+//                case "EXEC":
+//                    return EXEC;
+//
+//                default:
+//                    throw new RuntimeException("!!!");
+//
+//            }
+//        }
 
     }
 

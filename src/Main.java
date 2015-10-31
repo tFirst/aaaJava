@@ -1,161 +1,184 @@
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.apache.commons.cli.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by Стас on 07.10.2015.
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
+
+        ArrayList<String> arguments = new ArrayList<String>();
+
+        Option optionLogin = new Option("login", true, "Login");
+        Option optionPass = new Option("pass", true, "Password");
+        Option optionRes = new Option("res", true, "Resource");
+        Option optionRole = new Option("role", true, "Role");
+        Option optionStartDate = new Option("ds", true, "StartDate");
+        Option optionFinishDate = new Option("df", true, "FinishDate");
+        Option optionVolume = new Option("vol", true, "Volume");
+        Option optionHelp = new Option("h", true, "Help");
+
+        optionLogin.setOptionalArg(true);
+        optionPass.setOptionalArg(true);
+        optionRes.setOptionalArg(true);
+        optionRole.setOptionalArg(true);
+        optionStartDate.setOptionalArg(true);
+        optionFinishDate.setOptionalArg(true);
+        optionVolume.setOptionalArg(true);
+        optionHelp.setOptionalArg(true);
+
+        optionLogin.setArgName("login ");
+        optionPass.setArgName("password ");
+        optionRes.setArgName("resource ");
+        optionRole.setArgName("role ");
+        optionStartDate.setArgName("startDate ");
+        optionFinishDate.setArgName("finishDate ");
+        optionVolume.setArgName("volume ");
+        optionHelp.setArgName("help");
+
+        Options posixOptions = new Options();
+        posixOptions.addOption(optionLogin);
+        posixOptions.addOption(optionPass);
+        posixOptions.addOption(optionRes);
+        posixOptions.addOption(optionRole);
+        posixOptions.addOption(optionStartDate);
+        posixOptions.addOption(optionFinishDate);
+        posixOptions.addOption(optionVolume);
+        posixOptions.addOption(optionHelp);
+
+        CommandLineParser cmdLineParser = new PosixParser();
+        CommandLine commandLine = cmdLineParser.parse(posixOptions, args);
+
+        if ( commandLine.hasOption("h") ) {
+            arguments.add(commandLine.getOptionValue("h"));
+
+            System.out.println("[-h] - Show help\n" +
+                                "[-login login] - Enter login\n" +
+                                "[-pass password] - Enter password\n" +
+                                "Login may be entered just with the password" +
+                                "[-res resource] - Enter resource\n" +
+                                "[-role role] - Enter role\n" +
+                                "Resource may be entered just with the role" +
+                                "[-ds date] - Enter date1\n" +
+                                "[-df date] - Enter date2\n" +
+                                "[-vol volume] - Enter volume\n" +
+                                "Dates and volume may be entered just together");
+            System.exit(0);
+        }
+
+        if ( commandLine.hasOption("login") ) {
+
+            arguments.add(commandLine.getOptionValue("login"));
+            //System.out.println(commandLine.getOptionValue("login"));
+
+        }
+
+        if ( commandLine.hasOption("pass") ) {
+
+            arguments.add(commandLine.getOptionValue("pass"));
+            //System.out.println(commandLine.getOptionValue("pass"));
+
+        }
+
+        if ( commandLine.hasOption("res") ) {
+
+            arguments.add(commandLine.getOptionValue("res"));
+            //System.out.println(commandLine.getOptionValue("res"));
+
+        }
+
+        if ( commandLine.hasOption("role") ) {
+
+            arguments.add(commandLine.getOptionValue("role"));
+            //System.out.println(commandLine.getOptionValue("role"));
+
+        }
+
+        if ( commandLine.hasOption("ds") ) {
+
+            arguments.add(commandLine.getOptionValue("ds"));
+           // System.out.println(commandLine.getOptionValue("ds"));
+
+        }
+
+        if ( commandLine.hasOption("df") ) {
+
+            arguments.add(commandLine.getOptionValue("df"));
+           // System.out.println(commandLine.getOptionValue("df"));
+
+        }
+
+        if ( commandLine.hasOption("vol") ) {
+
+            arguments.add(commandLine.getOptionValue("vol"));
+            //System.out.println(commandLine.getOptionValue("vol"));
+
+        }
 
         ArrayList<Auth> auth = new ArrayList<Auth>();
         ArrayList<Autorise> autorise = new ArrayList<Autorise>();
+        ArrayList<Accounting> acct = new ArrayList<Accounting>();
 
-        Auth a = new Auth("admin", hashMake(hashMake("admin") + "5gth987hc6"), "5gth987hc6");
-        CheckUser(a, a.getLogin(), a.getHash());
-//            a.setLogin("admin");
-//            a.setSalt("5gth987hc6");
-//            a.setHash(a.hashMake ( a.hashMake ( "admin" ) + a.getSalt()) );
-
-
-        //System.out.println(a.login);
-        // System.out.println(a.salt);
-        //System.out.println(a.hash);
-
-        //System.out.println(args[0]);
-        //System.out.println(args[1]);
+        Auth a = new Auth("jdoe", Auth.hashMake(Auth.hashMake("sup3rpaZZ") + "5gth987hc6"), "5gth987hc6");
 
         auth.add(a);
 
-        //a.AuthManager( args[0], args[1] );
+        Auth.checkUser(arguments.get(0), arguments.get(1), auth);
 
-        Autorise atr = new Autorise();
-
-        atr.login = "admin";
-        atr.res = "A-B";
-        atr.role = Roles.EXEC;
+        Autorise atr = new Autorise("jdoe", "a", Roles.READ);
 
         autorise.add(atr);
 
-        System.out.println(autorise.get(0).login);
+        if (args.length > 2) {
 
-        //System.out.println(auth.get(0).login);
-        //System.out.println(autorise.get(0));
+            if (((Objects.equals(arguments.get(2), "")) || (Objects.equals(arguments.get(3), "")) ||
+                    (arguments.get(2) == null) || (arguments.get(3) == null)))
+                System.exit(0);
 
-        if ((args[2] == "") || (args[3] == "") || (args[2] == null) || (args[3] == null))
-            System.exit(0);
+            else {
 
-        else {
+                String login = "";
 
-            //int index = auth.indexOf(a);
+                for (int i = 0; i < auth.size(); i++) {
 
-            //System.out.println(index);
+                    if (auth.get(i).getLogin().equals(arguments.get(0)))
+                        login = (String) arguments.get(0);
 
-            String login = "";
+                }
 
-            for (int i = 0; i < auth.size(); i++) {
+                if (login.equals(""))
+                    System.exit(1);
 
-                if (auth.get(i).getLogin().equals(args[0]))
-                    login = args[0];
+//                if ((Roles.valueOf(arguments[3])!=Roles.EXEC) &&
+//                        (Roles.valueOf(arguments[3])!=Roles.READ) &&
+//                        (Roles.valueOf(arguments[3])!=Roles.WRITE))
+                if (!(arguments.get(3).equals("EXEC")) &&
+                        !(arguments.get(3).equals("READ")) &&
+                        !(arguments.get(3).equals("WRITE")))
+                    System.exit(3);
+                else {
 
+                    Autorise.checkRes(login, (String) arguments.get(2), Roles.valueOf((String) arguments.get(3)), autorise);
+
+                    if (args.length > 4) {
+
+                        if ((Objects.equals(arguments.get(4), "")) || (Objects.equals(arguments.get(5), "")) ||
+                                (arguments.get(4) == null) || (arguments.get(5) == null) || (arguments.get(6) == null))
+                            System.exit(0);
+                        else {
+                            Accounting.checkDateAndVolume(arguments.get(4), arguments.get(5), arguments.get(6));
+                            Accounting acc = new Accounting(arguments.get(0), arguments.get(4), arguments.get(5), Integer.parseInt(arguments.get(6)));
+
+                            acct.add(acc);
+                        }
+                    }
+                }
             }
-
-            if (login.equals(""))
-                System.exit(1);
-
-            //CheckResource(autorise, login, args[2], Roles.valueOf(args[3]));
-            checkRes(autorise.get(0).login, args[2], autorise);
-
         }
-    }
-
-    public static void CheckResource(ArrayList<Autorise> a, String login, String res, Roles role) {
-
-        for (Autorise anA : a) {
-
-            //if (anA.login.equals(login) && anA.role == role)
-
-
-        }
-
-        //if ( !this.res.equals(res) )
-        //System.exit(4);
-
-        //else if ( !this.role.equals(role) )
-        //System.exit(3);
-
-    }
-
-    public static String hashMake(String pass) { /** метод для хеширования пароля */
-
-        try {
-
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(pass.getBytes(), 0, pass.length());
-            String hash = new BigInteger(1, md5.digest()).toString(16);
-            return hash;
-
-        } catch (final NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "";
-        }
-
-    }
-
-    private static void CheckUser(Auth a, String login, String hash) { /** Метод, непосредственно, проверки данных на достоверность */
-
-        if (!a.getLogin().equals(login))
-            System.exit(1);
-
-        else if (!a.getHash().equals(hash))
-            System.exit(2);
-
-    }
-
-    private static void checkRes(String a, String b, ArrayList<Autorise> aut) {
-
-        //String o = "1.2.3.4";
-
-        String parse[] = b.split("-");
-
-        int temp = 0;
-
-        for (int i = 0; i < parse.length; i++)
-            System.out.println(parse[i]);
-
-        for (int i = 0; i < aut.size(); i++) {
-
-            if (a.equals(aut.get(i).login)) {
-
-                temp = i;
-
-            }
-
-        }
-
-        String atrStr[] = aut.get(temp).res.split("-");
-
-        for (int i = 0; i < atrStr.length; i++)
-            System.out.println(atrStr[i]);
-        System.out.println(aut.get(temp).res);
-
-        if (parse.length > atrStr.length) {
-
-            for (int j = 0; j < atrStr.length; j++) {
-
-                if (parse[j] == atrStr[j])
-                    continue;
-                else
-                    System.exit(4);
-
-            }
-
-        }
-        else
-            System.exit(4);
-
     }
 
 }
