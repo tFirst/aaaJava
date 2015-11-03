@@ -1,7 +1,12 @@
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
- * Created by ���� on 07.10.2015.
+ * Данный класс отвечает за аккаунтинг.
+ * Он имеет поля login, куда записывается логин пользователя,
+ * startDate - дата начала пользования ресурсом,
+ * finishDate - дата окончания пользования ресурсом
+ * и volume - объем, который может быть использован.
  */
 public class Accounting {
 
@@ -9,6 +14,10 @@ public class Accounting {
     protected String startDate;
     protected String finishDate;
     protected int volume;
+
+    /**
+     * Данный метод отвечает за заполнение полей класса
+     */
 
     public Accounting(String login, String sD, String fD, int vol) {
 
@@ -19,41 +28,34 @@ public class Accounting {
 
     }
 
+    /**
+     * Данный метод отвечает за проверку введенных данных, т.е.,
+     * например, чтобы дата соответствовала формату ГГГГ-ММ-ДД, а также,
+     * чтобы значение volume было числом, а не срокой.
+     */
+
     public static void checkDateAndVolume(String sD, String fD, String vol) {
 
-        String[] stDate = sD.split("-");
-        String[] finDate = fD.split("-");
-
-        if (( stDate[0].length() != 4 ) || ( finDate[0].length() != 4 ))
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            dateFormat.parse(sD);
+        } catch (ParseException e) {
             System.exit(5);
-
-        else if ((stDate[1].length() != 2) || (finDate[1].length() != 2))
-            System.exit(5);
-
-        else if ((stDate[2].length() != 2) || (finDate[2].length() != 2))
-            System.exit(5);
+        }
 
         try {
-            int t = Integer.parseInt((String) vol);
+            dateFormat.parse(fD);
+        } catch (ParseException e) {
+            System.exit(5);
+        }
+
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            Integer.parseInt(vol);
         } catch (NumberFormatException e) {
             System.exit(5);
         }
 
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public String getFinishDate() {
-        return finishDate;
-    }
-
-    public int getVolume() {
-        return volume;
-    }
 }
