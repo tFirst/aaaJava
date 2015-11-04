@@ -12,18 +12,18 @@ public class Accounting {
 
     protected String login;
     protected String startDate;
-    protected String finishDate;
+    protected String endDate;
     protected int volume;
 
     /**
      * Данный метод отвечает за заполнение полей класса
      */
 
-    public Accounting(String login, String sD, String fD, int vol) {
+    public Accounting(String login, String sD, String eD, int vol) {
 
         this.login = login;
         this.startDate = sD;
-        this.finishDate = fD;
+        this.endDate = eD;
         this.volume = vol;
 
     }
@@ -34,7 +34,7 @@ public class Accounting {
      * чтобы значение volume было числом, а не срокой.
      */
 
-    public static void checkDateAndVolume(String sD, String fD, String vol) {
+    public static void checkDateAndVolume(String sD, String eD, String vol) {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -44,7 +44,7 @@ public class Accounting {
         }
 
         try {
-            dateFormat.parse(fD);
+            dateFormat.parse(eD);
         } catch (ParseException e) {
             System.exit(5);
         }

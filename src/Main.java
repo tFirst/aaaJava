@@ -15,7 +15,7 @@ public class Main {
                 .addOption("res", true, "Resource")
                 .addOption("role", true, "Role")
                 .addOption("ds", true, "StartDate")
-                .addOption("df", true, "FinishDate")
+                .addOption("de", true, "EndhDate")
                 .addOption("vol", true, "Volume")
                 .addOption("h", false, "Help");
 
@@ -28,7 +28,7 @@ public class Main {
             System.exit(0);
         }
 
-        if (commandLine.hasOption("h") || commandLine.getArgs().length == 0) {
+        if (commandLine.hasOption("h") || args.length == 0) {
 
             printHelp(options);
             System.exit(0);
@@ -65,9 +65,9 @@ public class Main {
 
         }
 
-        if (commandLine.hasOption("df")) {
+        if (commandLine.hasOption("de")) {
 
-            arguments.add(commandLine.getOptionValue("df"));
+            arguments.add(commandLine.getOptionValue("de"));
 
         }
 
@@ -122,12 +122,12 @@ public class Main {
 
                     if (args.length > 4) {
 
-                        if ((Objects.equals(commandLine.getOptionValue("ds"), "")) || (Objects.equals(commandLine.getOptionValue("df"), "")) ||
-                                (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("df") == null) || (commandLine.getOptionValue("vol") == null))
+                        if ((Objects.equals(commandLine.getOptionValue("ds"), "")) || (Objects.equals(commandLine.getOptionValue("de"), "")) ||
+                                (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("de") == null) || (commandLine.getOptionValue("vol") == null))
                             System.exit(0);
                         else {
-                            Accounting.checkDateAndVolume(commandLine.getOptionValue("ds"), commandLine.getOptionValue("df"), commandLine.getOptionValue("vol"));
-                            Accounting acc = new Accounting(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("df"), Integer.parseInt(commandLine.getOptionValue("vol")));
+                            Accounting.checkDateAndVolume(commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
+                            Accounting acc = new Accounting(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), Integer.parseInt(commandLine.getOptionValue("vol")));
 
                             acct.add(acc);
                         }
