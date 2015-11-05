@@ -63,13 +63,17 @@ public class Auth {
 
         }
 
-        if ( index == -1 )
+        if ( index == -1 ) {
+            System.out.println("1");
             System.exit(1);
+        }
 
         pass = hashMake(hashMake((String) pass)+auth.get(index).salt);
 
-        if (!pass.equals(auth.get(index).hash))
+        if (!pass.equals(auth.get(index).hash)) {
+            System.out.println("2");
             System.exit(2);
+        }
 
     }
 

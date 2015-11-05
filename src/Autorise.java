@@ -60,17 +60,22 @@ public class Autorise {
 
                 if (!Objects.equals(parse[j], atrStr[j])) {
 
+                    System.out.println("4");
                     System.exit(4);
 
                 }
 
             }
         }
-        else
+        else {
+            System.out.println("4");
             System.exit(4);
+        }
 
-        if (role != aut.get(index).role)
-            System.exit(4);
+        if (role != aut.get(index).role) {
+            System.out.println("4");
+            System.exit(1);
+        }
 
     }
 

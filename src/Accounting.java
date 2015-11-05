@@ -31,21 +31,26 @@ public class Accounting {
     /**
      * Данный метод отвечает за проверку введенных данных, т.е.,
      * например, чтобы дата соответствовала формату ГГГГ-ММ-ДД, а также,
-     * чтобы значение volume было числом, а не срокой.
+     * чтобы значение volume было числом, а не строкой.
      */
 
     public static void checkDateAndVolume(String sD, String eD, String vol) {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        dateFormat.setLenient(false);
+
         try {
             dateFormat.parse(sD);
         } catch (ParseException e) {
+            System.out.println("5");
             System.exit(5);
         }
 
         try {
             dateFormat.parse(eD);
         } catch (ParseException e) {
+            System.out.println("5");
             System.exit(5);
         }
 
@@ -53,6 +58,7 @@ public class Accounting {
             //noinspection ResultOfMethodCallIgnored
             Integer.parseInt(vol);
         } catch (NumberFormatException e) {
+            System.out.println("5");
             System.exit(5);
         }
 

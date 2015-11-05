@@ -95,8 +95,10 @@ public class Main {
         if (args.length > 2) {
 
             if (((Objects.equals(commandLine.getOptionValue("res"), "")) || (Objects.equals(commandLine.getOptionValue("role"), "")) ||
-                    (commandLine.getOptionValue("res") == null) || (commandLine.getOptionValue("role") == null)))
+                    (commandLine.getOptionValue("res") == null) || (commandLine.getOptionValue("role") == null))) {
+                System.out.println("0");
                 System.exit(0);
+            }
 
             else {
 
@@ -109,13 +111,17 @@ public class Main {
 
                 }
 
-                if (login.equals(""))
+                if (login.equals("")) {
+                    System.out.println("1");
                     System.exit(1);
+                }
 
                 if (!(commandLine.getOptionValue("role").equals("EXEC")) &&
                         !(commandLine.getOptionValue("role").equals("READ")) &&
-                        !(commandLine.getOptionValue("role").equals("WRITE")))
+                        !(commandLine.getOptionValue("role").equals("WRITE"))) {
+                    System.out.println("3");
                     System.exit(3);
+                }
                 else {
 
                     Autorise.checkRes(login, commandLine.getOptionValue("res"), Roles.valueOf(commandLine.getOptionValue("role")), autorise);
@@ -123,13 +129,17 @@ public class Main {
                     if (args.length > 4) {
 
                         if ((Objects.equals(commandLine.getOptionValue("ds"), "")) || (Objects.equals(commandLine.getOptionValue("de"), "")) ||
-                                (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("de") == null) || (commandLine.getOptionValue("vol") == null))
+                                (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("de") == null) || (commandLine.getOptionValue("vol") == null)) {
+                            System.out.println("0");
                             System.exit(0);
+                        }
                         else {
                             Accounting.checkDateAndVolume(commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
                             Accounting acc = new Accounting(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), Integer.parseInt(commandLine.getOptionValue("vol")));
 
                             acct.add(acc);
+                            System.out.println("0");
+                            System.exit(0);
                         }
                     }
                 }
