@@ -1,7 +1,7 @@
 result=0
 
 test () {
-    arr=($1)
+    array=($1)
     ./RUN.sh ${arr[*]}
     status=$?
     if [[ $status -ne $2 ]]; then
