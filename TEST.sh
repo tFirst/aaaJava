@@ -2,7 +2,7 @@ result=0
 
 test () {
     array=($1)
-    ./RUN.sh ${arr[*]}
+    ./RUN.sh ${array[*]}
     status=$?
     if [[ $status -ne $2 ]]; then
         echo TESTING FAIL [$1] $status "!=" $2
