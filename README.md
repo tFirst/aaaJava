@@ -1,12 +1,12 @@
 TRPO
 Build instructions
 
-To build project execute ./BUILD.bat
+To build project execute ./BUILD.sh
 
 Run instructions
 
-To run application execute ./RUN.bat
+To run application execute ./RUN.sh
 
 Test instructions
 
-To run all tests execute ./TEST.bat
+To run all tests execute ./TEST.sh

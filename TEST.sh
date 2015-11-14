@@ -1,8 +1,8 @@
 result=0
 
 test () {
-    arr=($1)
-    ./RUN.sh ${arr[*]}
+    array=($1)
+    ./RUN.sh ${array[*]}
     status=$?
     if [[ $status -ne $2 ]]; then
         echo TESTING FAIL [$1] $status "!=" $2
