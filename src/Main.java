@@ -96,7 +96,6 @@ public class Main {
 
             if (((Objects.equals(commandLine.getOptionValue("res"), "")) || (Objects.equals(commandLine.getOptionValue("role"), "")) ||
                     (commandLine.getOptionValue("res") == null) || (commandLine.getOptionValue("role") == null))) {
-                System.out.println("0");
                 System.exit(0);
             }
 
@@ -112,14 +111,12 @@ public class Main {
                 }
 
                 if (login.equals("")) {
-                    System.out.println("1");
                     System.exit(1);
                 }
 
                 if (!(commandLine.getOptionValue("role").equals("EXEC")) &&
                         !(commandLine.getOptionValue("role").equals("READ")) &&
                         !(commandLine.getOptionValue("role").equals("WRITE"))) {
-                    System.out.println("3");
                     System.exit(3);
                 }
                 else {
@@ -130,7 +127,6 @@ public class Main {
 
                         if ((Objects.equals(commandLine.getOptionValue("ds"), "")) || (Objects.equals(commandLine.getOptionValue("de"), "")) ||
                                 (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("de") == null) || (commandLine.getOptionValue("vol") == null)) {
-                            System.out.println("0");
                             System.exit(0);
                         }
                         else {
@@ -138,7 +134,6 @@ public class Main {
                             Accounting acc = new Accounting(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), Integer.parseInt(commandLine.getOptionValue("vol")));
 
                             acct.add(acc);
-                            System.out.println("0");
                             System.exit(0);
                         }
                     }

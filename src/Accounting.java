@@ -43,14 +43,12 @@ public class Accounting {
         try {
             dateFormat.parse(sD);
         } catch (ParseException e) {
-            System.out.println("5");
             System.exit(5);
         }
 
         try {
             dateFormat.parse(eD);
         } catch (ParseException e) {
-            System.out.println("5");
             System.exit(5);
         }
 
@@ -58,7 +56,6 @@ public class Accounting {
             //noinspection ResultOfMethodCallIgnored
             Integer.parseInt(vol);
         } catch (NumberFormatException e) {
-            System.out.println("5");
             System.exit(5);
         }
 
