@@ -39,3 +39,4 @@ if [[ $result -gt 0 ]]; then
     echo $result tests failed
 else
     echo ALL TESTS PASSED
+fi
