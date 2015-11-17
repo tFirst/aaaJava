@@ -1,3 +1,4 @@
+#!/bin/bash -x
 result=0
 
 test () {

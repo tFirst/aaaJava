@@ -15,7 +15,7 @@ public class Main {
                 .addOption("res", true, "Resource")
                 .addOption("role", true, "Role")
                 .addOption("ds", true, "StartDate")
-                .addOption("de", true, "EndhDate")
+                .addOption("de", true, "EndDate")
                 .addOption("vol", true, "Volume")
                 .addOption("h", false, "Help");
 
