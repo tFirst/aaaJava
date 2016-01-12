@@ -1,9 +1,9 @@
 insert into autorise
 (id, login, resource, role)
 values
-(2,'jdoe', 'a.b','WRITE'),
-(3,'jrow', 'a.b.c','EXEC'),
-(4,'jdoe', 'a.bc','EXEC');
+(2,1, 'a.b','WRITE'),
+(3,2, 'a.b.c','EXEC'),
+(4,1, 'a.bc','EXEC');
 
 insert into auth
 (id, login, hash, salt)
