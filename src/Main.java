@@ -36,7 +36,11 @@ public class Main {
         if (args.length > 4) {
             Autorise autorise = new Autorise();
 
-            if (Roles.valueOf(commandLine.getOptionValue("role")) == null) {
+            Roles r = null;
+            try {
+                r = Roles.valueOf(commandLine.getOptionValue("role"));
+            }
+            catch (Exception e) {
                 logger.error("Incorrect role");
                 System.exit(3);
             }

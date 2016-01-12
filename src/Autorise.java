@@ -53,28 +53,33 @@ public class Autorise {
 
         String parse[] = res.split("\\.");
 
-        String[] atrStr = resultSet.getString("resource").split("\\.");
+        boolean check = false;
 
-        if (parse.length >= atrStr.length) {
+        while (resultSet.next()) {
+            if (resultSet.getString("role").equals(role.toString())) {
+                check = true;
+                String[] atrStr = resultSet.getString("resource").split("\\.");
+                if (parse.length >= atrStr.length) {
 
-            for (int j = 0; j < atrStr.length; j++) {
+                    for (int j = 0; j < atrStr.length; j++) {
 
-                if (!Objects.equals(parse[j], atrStr[j])) {
+                        if (!Objects.equals(parse[j], atrStr[j])) {
+                            logger.error("Not access to this resource. Bad resource name");
+                            connection.close();
+                            System.exit(4);
+                        }
+
+                    }
+                } else {
                     logger.error("Not access to this resource. Bad resource name");
                     connection.close();
                     System.exit(4);
-
                 }
-
+                break;
             }
         }
-        else {
-            logger.error("Not access to this resource. Bad resource name");
-            connection.close();
-            System.exit(4);
-        }
 
-        if (!(resultSet.getString("role").equals(role.toString()))) {
+        if (!check) {
             logger.error("Not access to this resource. Bad role");
             connection.close();
             System.exit(3);
