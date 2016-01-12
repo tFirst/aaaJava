@@ -15,6 +15,5 @@ find . -name "*.java" | xargs javac -cp "lib/*" -d outProject/classes -sourcepat
 
 mkdir -p outProject/lib
 cp lib/* outProject/lib
-cp h2/* outProject/h2
 
 jar -cfe outProject/aaa.jar Main -C outProject/classes .
