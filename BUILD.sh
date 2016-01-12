@@ -17,6 +17,6 @@ mkdir -p outProject/lib
 cp lib/* outProject/lib
 
 mkdir -p outProject/classes/db/migration
-cp src/db/migration outProject/classes/db/migration
+cp src/db/migration/* outProject/classes/db/migration
 
 jar -cfe outProject/aaa.jar Main -C outProject/classes .
