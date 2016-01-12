@@ -1,13 +1,15 @@
 import org.apache.commons.cli.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.sql.SQLException;
 
 public class Main {
+     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ParseException {
 
-        ArrayList<String> arguments = new ArrayList<>();
+        logger.trace("-------Enter console-------");
 
         Options options = new Options()
                 .addOption("login", true, "Login")
@@ -20,124 +22,31 @@ public class Main {
                 .addOption("h", false, "Help");
 
         CommandLineParser cmdLineParser = new DefaultParser();
-        CommandLine commandLine = null;
-        try {
-            commandLine = cmdLineParser.parse(options, args);
-        } catch (ParseException e) {
-            printHelp(options);
-            System.exit(0);
-        }
+        CommandLine commandLine = cmdLineParser.parse(options, args);
 
         if (commandLine.hasOption("h") || args.length == 0) {
-
             printHelp(options);
+            logger.trace("-------Print help-------");
             System.exit(0);
-
         }
 
-        if (commandLine.hasOption("login")) {
+        Auth auth = new Auth();
+        auth.checkUser(commandLine.getOptionValue("login"), commandLine.getOptionValue("pass"));
 
-            arguments.add(commandLine.getOptionValue("login"));
+        if (args.length > 4) {
+            Autorise autorise = new Autorise();
 
-        }
-
-        if (commandLine.hasOption("pass")) {
-
-            arguments.add(commandLine.getOptionValue("pass"));
-
-        }
-
-        if (commandLine.hasOption("res")) {
-
-            arguments.add(commandLine.getOptionValue("res"));
-
-        }
-
-        if (commandLine.hasOption("role")) {
-
-            arguments.add(commandLine.getOptionValue("role"));
-
-        }
-
-        if (commandLine.hasOption("ds")) {
-
-            arguments.add(commandLine.getOptionValue("ds"));
-
-        }
-
-        if (commandLine.hasOption("de")) {
-
-            arguments.add(commandLine.getOptionValue("de"));
-
-        }
-
-        if (commandLine.hasOption("vol")) {
-
-            arguments.add(commandLine.getOptionValue("vol"));
-
-        }
-
-        ArrayList<Auth> auth = new ArrayList<>();
-        ArrayList<Autorise> autorise = new ArrayList<>();
-        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        ArrayList<Accounting> acct = new ArrayList<>();
-
-        Auth a = new Auth("jdoe", Auth.hashMake(Auth.hashMake("sup3rpaZZ") + "5gth987hc6"), "5gth987hc6");
-
-        auth.add(a);
-
-        Auth.checkUser(arguments.get(0), arguments.get(1), auth);
-
-        Autorise atr = new Autorise("jdoe", "a", Roles.READ);
-
-        autorise.add(atr);
-
-        if (args.length > 2) {
-
-            if (((Objects.equals(commandLine.getOptionValue("res"), "")) || (Objects.equals(commandLine.getOptionValue("role"), "")) ||
-                    (commandLine.getOptionValue("res") == null) || (commandLine.getOptionValue("role") == null))) {
-                System.exit(0);
+            if (Roles.valueOf(commandLine.getOptionValue("role")) == null) {
+                logger.error("Incorrect role");
+                System.exit(3);
             }
 
-            else {
+            autorise.checkRes(commandLine.getOptionValue("login"), commandLine.getOptionValue("res"), Roles.valueOf(commandLine.getOptionValue("role")));
 
-                String login = "";
-
-                for (Auth anAuth : auth) {
-
-                    if (anAuth.getLogin().equals(commandLine.getOptionValue("login")))
-                        login = commandLine.getOptionValue("login");
-
-                }
-
-                if (login.equals("")) {
-                    System.exit(1);
-                }
-
-                if (!(commandLine.getOptionValue("role").equals("EXEC")) &&
-                        !(commandLine.getOptionValue("role").equals("READ")) &&
-                        !(commandLine.getOptionValue("role").equals("WRITE"))) {
-                    System.exit(3);
-                }
-                else {
-
-                    Autorise.checkRes(login, commandLine.getOptionValue("res"), Roles.valueOf(commandLine.getOptionValue("role")), autorise);
-
-                    if (args.length > 4) {
-
-                        if ((Objects.equals(commandLine.getOptionValue("ds"), "")) || (Objects.equals(commandLine.getOptionValue("de"), "")) ||
-                                (commandLine.getOptionValue("ds") == null) || (commandLine.getOptionValue("de") == null) || (commandLine.getOptionValue("vol") == null)) {
-                            System.exit(0);
-                        }
-                        else {
-                            Accounting.checkDateAndVolume(commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
-                            Accounting acc = new Accounting(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), Integer.parseInt(commandLine.getOptionValue("vol")));
-
-                            acct.add(acc);
-                            System.exit(0);
-                        }
-                    }
-                }
+            if (args.length > 7) {
+                Accounting accounting = new Accounting();
+                accounting.checkDateAndVolume(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
+                System.exit(0);
             }
         }
     }

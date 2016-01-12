@@ -1,4 +1,7 @@
-import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.*;
 import java.util.Objects;
 
 /**
@@ -9,21 +12,14 @@ import java.util.Objects;
  */
 public class Autorise {
 
-    protected String login;
-    protected String res;
-    protected Roles role;
+    private static final Logger logger = LogManager.getLogger(Autorise.class);
+    Connection connection;
 
     /**
      * Эта функция отвечает за заполнение полей класса
      */
 
-    public Autorise(String login, String res, Roles role) {
-
-        this.login = login;
-        this.res = res;
-        this.role = role;
-
-    }
+    public Autorise() { logger.trace("-------Starting autorisation-------"); }
 
     /**
      * Данная функция отвечает за проверку введенных данных.
@@ -36,30 +32,31 @@ public class Autorise {
      * в противном случае - выход из программы с соответствующим кодом.
      */
 
-    public static void checkRes(String login, String res, Roles role,  ArrayList<Autorise> aut) {
+    public void checkRes(String login, String res, Roles role) throws SQLException {
+
+        logger.trace("Connecting with data base");
+        connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+
+        PreparedStatement preparedStatement = connection.prepareStatement("select a.id, a.login, a.resource, r.role from autorise a, roles r where a.role = r.id and login = ?");
+        preparedStatement.setString(1, login);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if(!resultSet.next()) {
+            logger.error("Not data");
+            System.exit(4);
+        }
 
         String parse[] = res.split("\\.");
 
-        int index = 0;
-
-        for (int i = 0; i < aut.size(); i++) {
-
-            if (login.equals(aut.get(i).login)) {
-
-                index = i;
-
-            }
-
-        }
-
-        String[] atrStr = aut.get(index).res.split("\\.");
+        String[] atrStr = resultSet.getString("resource").split("\\.");
 
         if (parse.length >= atrStr.length) {
 
             for (int j = 0; j < atrStr.length; j++) {
 
                 if (!Objects.equals(parse[j], atrStr[j])) {
-
+                    logger.error("Not access to this resource. Bad resource name");
                     System.exit(4);
 
                 }
@@ -67,12 +64,16 @@ public class Autorise {
             }
         }
         else {
+            logger.error("Not access to this resource. Bad resource name");
             System.exit(4);
         }
 
-        if (role != aut.get(index).role) {
-            System.exit(4);
+        if (!(resultSet.getString("role").equals(role.toString()))) {
+            logger.error("Not access to this resource. Bad role");
+            System.exit(3);
         }
+
+        logger.trace("Checking OK");
 
     }
 

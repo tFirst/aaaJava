@@ -1,3 +1,7 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -10,22 +14,15 @@ import java.text.SimpleDateFormat;
  */
 public class Accounting {
 
-    protected String login;
-    protected String startDate;
-    protected String endDate;
-    protected int volume;
+    private static final Logger logger = LogManager.getLogger(Accounting.class);
+    Connection connection;
 
     /**
      * Данный метод отвечает за заполнение полей класса
      */
 
-    public Accounting(String login, String sD, String eD, int vol) {
-
-        this.login = login;
-        this.startDate = sD;
-        this.endDate = eD;
-        this.volume = vol;
-
+    public Accounting() {
+        logger.trace("-------Starting accounting-------");
     }
 
     /**
@@ -34,7 +31,7 @@ public class Accounting {
      * чтобы значение volume было числом, а не строкой.
      */
 
-    public static void checkDateAndVolume(String sD, String eD, String vol) {
+    public void checkDateAndVolume(String login, String sD, String eD, String vol) throws SQLException {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -43,21 +40,45 @@ public class Accounting {
         try {
             dateFormat.parse(sD);
         } catch (ParseException e) {
+            logger.error("Bad start date format");
             System.exit(5);
         }
 
         try {
             dateFormat.parse(eD);
         } catch (ParseException e) {
+            logger.error("Bad end date format");
             System.exit(5);
         }
 
         try {
-            //noinspection ResultOfMethodCallIgnored
             Integer.parseInt(vol);
         } catch (NumberFormatException e) {
+            logger.error("!!! Bad volume !!!");
             System.exit(5);
         }
+
+        logger.trace("Connectiong with data base");
+        connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+
+        PreparedStatement statement = connection.prepareStatement("select * from autorise where login = ?");
+        statement.setString(1, login);
+        ResultSet result = statement.executeQuery();
+        result.first();
+
+        logger.trace("Adding to Accounting");
+        PreparedStatement preparedStatement = connection.prepareStatement("insert into accounting (id, login, start_date, end_date, volume, resource)" +
+                                                                            " values (acc_seq.nextval, ?, ?, ?, ?, ?)");
+
+        preparedStatement.setString(1, login);
+        preparedStatement.setDate(2, Date.valueOf(sD));
+        preparedStatement.setDate(3, Date.valueOf(eD));
+        preparedStatement.setInt(4, Integer.parseInt(vol));
+        preparedStatement.setString(5, result.getString("resource"));
+
+        preparedStatement.executeUpdate();
+
+        logger.trace("Adding OK");
 
     }
 

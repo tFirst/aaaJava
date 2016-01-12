@@ -1,30 +1,29 @@
-import java.security.*;
-import java.math.BigInteger;
-import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 
-    /**
-     * Класс предназначен для аутентификации пользователя.
-     * Он имеет поля login, куда записывается введенный логин пользователя,
-     * hash, куда записывается хэш(хэш(пароль)+соль)
-     * и salt, куда записывается соль для данного пользователя.
-     * */
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.*;
+
+/**
+ * Класс предназначен для аутентификации пользователя.
+ * Он имеет поля login, куда записывается введенный логин пользователя,
+ * hash, куда записывается хэш(хэш(пароль)+соль)
+ * и salt, куда записывается соль для данного пользователя.
+ * */
 public class Auth {
 
-    private String login;
-    private String hash;
-    private String salt;
+    private static final Logger logger = LogManager.getLogger(Auth.class);
+    Connection connection;
 
         /**
          * Данный метод отвечает за заполнение полей класса
          */
 
-    public Auth ( String login, String hash, String salt ) {
-
-        this.login = login;
-        this.hash = hash;
-        this.salt = salt;
-
-    }
+    public Auth() { logger.trace("-------Starting authentification-------"); }
 
         /**
          * Функция hashMake отвечает за хеширование введенного пароля
@@ -52,30 +51,49 @@ public class Auth {
          * Если неверный логин или пароль, то программа завершается с соответствующим кодом.
          */
 
-    public static void checkUser(Object login, Object pass, ArrayList<Auth> auth) {
+    public void checkUser(String login, String pass) throws SQLException {
 
-        int index = -1;
+        logger.trace("Connecting with data base");
+        migrate();
+        connection = DriverManager.getConnection("jdbc:h2:./aaaJava", "root", "root");
 
-        for ( int i = 0; i < auth.size(); i++ ) {
+        logger.trace("Checking login and password");
+        PreparedStatement statement = connection.prepareStatement("select * from auth where login = ?");
+        statement.setString(1, login);
 
-            if (login.equals(auth.get(i).login))
-                index = i;
+        ResultSet resultSet = statement.executeQuery();
 
-        }
-
-        if ( index == -1 ) {
+        if (!resultSet.next()) {
+            logger.error("Incorrect login");
             System.exit(1);
         }
 
-        pass = hashMake(hashMake((String) pass)+auth.get(index).salt);
+        pass = hashMake(hashMake(pass) + resultSet.getString("salt"));
 
-        if (!pass.equals(auth.get(index).hash)) {
+        if (!pass.equals(resultSet.getString("hash"))) {
+            logger.error("Incorrect password");
             System.exit(2);
         }
 
+        logger.trace("Checking OK");
+
     }
 
-    public String getLogin() {
-        return login;
+    public void migrate() {
+        logger.info("Trying to migrate DB");
+        // Create the Flyway instance
+        Flyway flyway = new Flyway();
+
+        // Point it to the database
+        flyway.setDataSource("jdbc:h2:./aaaJava", "root", "root");
+
+        // Start the migration
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            logger.error("Cannot migrate DB", e);
+            throw e;
+        }
     }
+
 }

@@ -4,8 +4,6 @@
   */
 
 public enum Roles {
-
         READ, WRITE, EXEC;
-
-    }
+}
 
