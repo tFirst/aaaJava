@@ -1,5 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 
 import java.sql.*;
 import java.util.Objects;
@@ -35,15 +37,17 @@ public class Autorise {
     public void checkRes(String login, String res, Roles role) throws SQLException {
 
         logger.trace("Connecting with data base");
-        connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+        migrate();
+        connection = DriverManager.getConnection("jdbc:h2:./aaaJava", "root", "root");
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select a.id, a.login, a.resource, r.role from autorise a, roles r where a.role = r.id and login = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("select a.id, a.login, a.resource as resource, a.role as role from autorise a where a.login = ?");
         preparedStatement.setString(1, login);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
         if(!resultSet.next()) {
             logger.error("Not data");
+            connection.close();
             System.exit(4);
         }
 
@@ -57,6 +61,7 @@ public class Autorise {
 
                 if (!Objects.equals(parse[j], atrStr[j])) {
                     logger.error("Not access to this resource. Bad resource name");
+                    connection.close();
                     System.exit(4);
 
                 }
@@ -65,16 +70,36 @@ public class Autorise {
         }
         else {
             logger.error("Not access to this resource. Bad resource name");
+            connection.close();
             System.exit(4);
         }
 
         if (!(resultSet.getString("role").equals(role.toString()))) {
             logger.error("Not access to this resource. Bad role");
+            connection.close();
             System.exit(3);
         }
 
         logger.trace("Checking OK");
+        connection.close();
 
+    }
+
+    public void migrate() {
+        logger.info("Trying to migrate DB");
+        // Create the Flyway instance
+        Flyway flyway = new Flyway();
+
+        // Point it to the database
+        flyway.setDataSource("jdbc:h2:./aaaJava", "root", "root");
+
+        // Start the migration
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            logger.error("Cannot migrate DB", e);
+            throw e;
+        }
     }
 
 }

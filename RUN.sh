@@ -7,7 +7,7 @@ echo Linux
 CP="lib/*:outProject/aaa.jar"
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
 echo Windows
-CP="lib/*;outProject/aaa.jar"
+CP="h2/*;lib/*;outProject/aaa.jar"
 fi
 
-java -cp "$CP" Main $*
+java -cp "$CP" Main "$@"

@@ -1,5 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -59,7 +61,8 @@ public class Accounting {
         }
 
         logger.trace("Connectiong with data base");
-        connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+        migrate();
+        connection = DriverManager.getConnection("jdbc:h2:./aaaJava", "root", "root");
 
         PreparedStatement statement = connection.prepareStatement("select * from autorise where login = ?");
         statement.setString(1, login);
@@ -80,6 +83,25 @@ public class Accounting {
 
         logger.trace("Adding OK");
 
+        connection.close();
+
+    }
+
+    public void migrate() {
+        logger.info("Trying to migrate DB");
+        // Create the Flyway instance
+        Flyway flyway = new Flyway();
+
+        // Point it to the database
+        flyway.setDataSource("jdbc:h2:./aaaJava", "root", "root");
+
+        // Start the migration
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            logger.error("Cannot migrate DB", e);
+            throw e;
+        }
     }
 
 }

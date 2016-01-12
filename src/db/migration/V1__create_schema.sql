@@ -4,7 +4,8 @@ id number,
 login varchar2(30),
 start_date date,
 end_date date,
-volume number);
+volume number,
+resource varchar2(30));
 
 create table auth
 (
@@ -24,3 +25,7 @@ create table roles
 (
 id number,
 role varchar2(10));
+
+create sequence acc_seq
+increment by 1
+start with 1;

@@ -65,6 +65,7 @@ public class Auth {
 
         if (!resultSet.next()) {
             logger.error("Incorrect login");
+            connection.close();
             System.exit(1);
         }
 
@@ -72,8 +73,11 @@ public class Auth {
 
         if (!pass.equals(resultSet.getString("hash"))) {
             logger.error("Incorrect password");
+            connection.close();
             System.exit(2);
         }
+
+        connection.close();
 
         logger.trace("Checking OK");
 

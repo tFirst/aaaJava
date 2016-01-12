@@ -43,7 +43,7 @@ public class Main {
 
             autorise.checkRes(commandLine.getOptionValue("login"), commandLine.getOptionValue("res"), Roles.valueOf(commandLine.getOptionValue("role")));
 
-            if (args.length > 7) {
+            if (args.length > 8) {
                 Accounting accounting = new Accounting();
                 accounting.checkDateAndVolume(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
                 System.exit(0);

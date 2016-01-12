@@ -1,4 +1,5 @@
 #!/bin/bash -x
+
 rm -rf outProject
 mkdir -p outProject/classes
 
