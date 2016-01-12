@@ -12,7 +12,7 @@ create table auth
 id number,
 login varchar2(30),
 hash varchar2(500),
-salt varchar2(100));
+salt varchar2(500));
 
 create table autorise
 (
