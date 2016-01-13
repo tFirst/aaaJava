@@ -1,13 +1,13 @@
 #!/bin/bash -x
 if [ "$(uname)" == "Darwin" ]; then
 echo MacOS
-CP="lib/*:outProject/aaa.jar"
+CP="h2/*:lib/*:target/aaaJava-2.0.jar"
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 echo Linux
-CP="lib/*:outProject/aaa.jar"
+CP="h2/*:lib/*:target/aaaJava-2.0.jar"
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
 echo Windows
-CP="h2/*;lib/*;outProject/aaa.jar"
+CP="h2/*;lib/*;target/aaaJava-2.0.jar"
 fi
 
-java -cp "$CP" Main "$@"
+java -cp "$CP" Main $@
