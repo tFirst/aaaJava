@@ -9,7 +9,8 @@ public class Main {
 
     public static void main(String[] args) throws SQLException, ParseException {
 
-        logger.trace("-------Enter console-------");
+        logger.trace("Start application");
+        logger.trace("Enter parameters {}", (Object) args);
 
         Options options = new Options()
                 .addOption("login", true, "Login")
@@ -26,14 +27,14 @@ public class Main {
 
         if (commandLine.hasOption("h") || args.length == 0) {
             printHelp(options);
-            logger.trace("-------Print help-------");
+            logger.trace("Print help");
             System.exit(0);
         }
 
         Auth auth = new Auth();
         auth.checkUser(commandLine.getOptionValue("login"), commandLine.getOptionValue("pass"));
 
-        if (args.length > 4) {
+        if (commandLine.hasOption("role") || commandLine.hasOption("res")) {
             Autorise autorise = new Autorise();
 
             Roles r = null;
@@ -41,13 +42,13 @@ public class Main {
                 r = Roles.valueOf(commandLine.getOptionValue("role"));
             }
             catch (Exception e) {
-                logger.error("Incorrect role");
+                logger.error("Incorrect role {}", commandLine.getOptionValue("role"));
                 System.exit(3);
             }
 
             autorise.checkRes(commandLine.getOptionValue("login"), commandLine.getOptionValue("res"), Roles.valueOf(commandLine.getOptionValue("role")));
 
-            if (args.length > 8) {
+            if (commandLine.hasOption("ds") || commandLine.hasOption("de") || commandLine.hasOption("vol")) {
                 Accounting accounting = new Accounting();
                 accounting.checkDateAndVolume(commandLine.getOptionValue("login"), commandLine.getOptionValue("ds"), commandLine.getOptionValue("de"), commandLine.getOptionValue("vol"));
                 System.exit(0);

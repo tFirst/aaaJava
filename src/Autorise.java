@@ -21,7 +21,7 @@ public class Autorise {
      * Эта функция отвечает за заполнение полей класса
      */
 
-    public Autorise() { logger.trace("-------Starting autorisation-------"); }
+    public Autorise() { logger.trace("Start autorisation"); }
 
     /**
      * Данная функция отвечает за проверку введенных данных.
@@ -46,7 +46,7 @@ public class Autorise {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         if(!resultSet.next()) {
-            logger.error("Not data");
+            logger.error("Not data for user {}", login);
             connection.close();
             System.exit(4);
         }
@@ -64,14 +64,14 @@ public class Autorise {
                     for (int j = 0; j < atrStr.length; j++) {
 
                         if (!Objects.equals(parse[j], atrStr[j])) {
-                            logger.error("Not access to this resource. Bad resource name");
+                            logger.error("Not access to resource {}", res);
                             connection.close();
                             System.exit(4);
                         }
 
                     }
                 } else {
-                    logger.error("Not access to this resource. Bad resource name");
+                    logger.error("Not access to resource {}", res);
                     connection.close();
                     System.exit(4);
                 }
@@ -80,12 +80,12 @@ public class Autorise {
         }
 
         if (!check) {
-            logger.error("Not access to this resource. Bad role");
+            logger.error("Not access to resource {} with role {}", res, role);
             connection.close();
             System.exit(3);
         }
 
-        logger.trace("Checking OK");
+        logger.trace("User {} get access to resource {} with role {}", login, res, role);
         connection.close();
 
     }

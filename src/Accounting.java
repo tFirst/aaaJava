@@ -24,7 +24,7 @@ public class Accounting {
      */
 
     public Accounting() {
-        logger.trace("-------Starting accounting-------");
+        logger.trace("Start accounting");
     }
 
     /**
@@ -42,21 +42,21 @@ public class Accounting {
         try {
             dateFormat.parse(sD);
         } catch (ParseException e) {
-            logger.error("Bad start date format");
+            logger.error("Bad start date format: {}", sD);
             System.exit(5);
         }
 
         try {
             dateFormat.parse(eD);
         } catch (ParseException e) {
-            logger.error("Bad end date format");
+            logger.error("Bad end date format: {}", sD);
             System.exit(5);
         }
 
         try {
             Integer.parseInt(vol);
         } catch (NumberFormatException e) {
-            logger.error("!!! Bad volume !!!");
+            logger.error("Bad volume: {}", vol);
             System.exit(5);
         }
 
@@ -69,7 +69,7 @@ public class Accounting {
         ResultSet result = statement.executeQuery();
         result.first();
 
-        logger.trace("Adding to Accounting");
+        logger.trace("Adding data in accounting table");
         PreparedStatement preparedStatement = connection.prepareStatement("insert into accounting (id, login, start_date, end_date, volume, resource)" +
                                                                             " values (acc_seq.nextval, ?, ?, ?, ?, ?)");
 
@@ -81,7 +81,7 @@ public class Accounting {
 
         preparedStatement.executeUpdate();
 
-        logger.trace("Adding OK");
+        logger.trace("Adding start date: {}, end date: {} and volume: {} for user {}", sD, eD, vol, login);
 
         connection.close();
 

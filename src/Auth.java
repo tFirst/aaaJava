@@ -23,7 +23,7 @@ public class Auth {
          * Данный метод отвечает за заполнение полей класса
          */
 
-    public Auth() { logger.trace("-------Starting authentification-------"); }
+    public Auth() { logger.trace("Start authentification"); }
 
         /**
          * Функция hashMake отвечает за хеширование введенного пароля
@@ -64,7 +64,7 @@ public class Auth {
         ResultSet resultSet = statement.executeQuery();
 
         if (!resultSet.next()) {
-            logger.error("Incorrect login");
+            logger.error("Incorrect login {}", login);
             connection.close();
             System.exit(1);
         }
@@ -72,14 +72,14 @@ public class Auth {
         pass = hashMake(hashMake(pass) + resultSet.getString("salt"));
 
         if (!pass.equals(resultSet.getString("hash"))) {
-            logger.error("Incorrect password");
+            logger.error("Incorrect password {} for user {}", pass, login);
             connection.close();
             System.exit(2);
         }
 
         connection.close();
 
-        logger.trace("Checking OK");
+        logger.trace("User {} with password {} entered", login, pass);
 
     }
 
