@@ -68,7 +68,7 @@ public class Autorise {
                         if (!Objects.equals(parse[j], atrStr[j])) {
                             logger.error("Not access to resource {}", res);
                             connection.close();
-                            System.exit(4);
+                            return 4;
                         }
 
                     }

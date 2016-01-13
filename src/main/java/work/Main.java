@@ -41,7 +41,7 @@ public class Main {
             return 0;
         }
 
-        if (commandLine.hasOption("h") || args.length == 0) {
+        if (commandLine.hasOption("h") || args.length == 0 || !commandLine.hasOption("login")) {
             printHelp(options);
             logger.trace("Print help");
             return 0;
